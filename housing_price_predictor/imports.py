@@ -44,4 +44,4 @@ from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import cross_val_score
 
 # Import customize transformation
-from CombinedAtributesAdder import CombinedAttributesAdder
+from CombinedAttributesAdder import CombinedAttributesAdder
