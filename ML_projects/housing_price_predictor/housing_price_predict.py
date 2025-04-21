@@ -105,4 +105,14 @@ forest_reg.fit(housing_train_prepared, cp_training_housing_reported)
 dectree_reg.fit(housing_train_prepared, cp_training_housing_reported)
 svr_reg.fit(housing_train_prepared, cp_training_housing_reported)
 
-# Evaluate each training result: 
+# Prediction check:
+lin_prediction = lin_reg.predict(housing_train_prepared)
+sgd_prediction = sgd_reg.predict(housing_train_prepared)
+lass_prediction = lass_reg.predict(housing_train_prepared)
+elas_prediction = elas_reg.predict(housing_train_prepared)
+bayes_prediction = bayes_ridge.predict(housing_train_prepared)
+Kern_prediction = kern_ridge.prediction(housing_train_prepared)
+
+forest_prediction = forest_reg.prediction(housing_train_prepared)
+dectree_prediction = dectree_reg.prediction(housing_train_prepared)
+svr_prediction = svr_reg.prediction(housing_train_prepared)
