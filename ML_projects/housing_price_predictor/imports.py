@@ -38,6 +38,7 @@ from sklearn.linear_model import BayesianRidge
 from sklearn.kernel_ridge import KernelRidge
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.tree import DecisionTreeRegressor
+from sklearn.gradi
 from sklearn.svm import SVR
 
 # Evaluation tools 

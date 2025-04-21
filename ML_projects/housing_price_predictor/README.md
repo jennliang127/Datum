@@ -12,9 +12,13 @@ The objective is to build, evaluate, and compare multiple models to identify the
 ## Models Trained
 - Linear Regression
 - Ridge Regression
+- SGD Regressor
 - Lasso Regression
-- Decision Tree Regressor
+- Elastic Net Regressor
+- Bayesian Ridge Regressor
+- Kernel Ridge Regressor
 - Random Forest Regressor
+- Decision Tree Regressor
 - Gradient Boosting Regressor
 - XGBoost Regressor
 - [any others you tried]
@@ -30,7 +34,13 @@ The objective is to build, evaluate, and compare multiple models to identify the
 |---------------------------|------|------|------|----------|
 | Linear Regression         | ...  | ...  | ...  | ...      |
 | Ridge Regression          | ...  | ...  | ...  | ...      |
+| SGD Regressor             | ...  | ...  | ...  | ...      |
+| Lasso Regression          | ...  | ...  | ...  | ...      |
+| Elastic Net               | ...  | ...  | ...  | ...      |
+| Bayesian Ridge Regressor  | ...  | ...  | ...  | ...      |
+| Kernel Ridge Regressor    | ...  | ...  | ...  | ...      |
 | Random Forest Regressor   | ...  | ...  | ...  | ...      |
+| Decision Tree Regressor   | ...  | ...  | ...  | ...      |
 | Gradient Boosting Regressor| ... | ...  | ...  | ...      |
 | XGBoost Regressor         | ...  | ...  | ...  | ...      |
 
