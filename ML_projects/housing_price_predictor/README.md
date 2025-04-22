@@ -7,16 +7,21 @@ The objective is to build, evaluate, and compare multiple models to identify the
 ## Dataset
 - Source: ""https://raw.githubusercontent.com/ageron/handson-ml2/datasets/housing/housing.csv"
 - Features: 
-    - Longitude: Float
-    - Latitude: Float
-    - Housing_median_age: Float
-    - Total_rooms: Float
-    - Total_bedrooms: Float
-    - Population: Float
-    - Households: Float
-    - Median_income: Float
-    - Median_house_value: Float
-    - Ocean_proximity: Object 
+|#   Column              Non-Null Count  Dtype | 
+---  ------              --------------  -----  
+| 0   longitude           20640 non-null  float64
+| 1   latitude            20640 non-null  float64
+| 2   housing_median_age  20640 non-null  float64
+| 3   total_rooms         20640 non-null  float64
+| 4   total_bedrooms      20433 non-null  float64
+| 5   population          20640 non-null  float64
+| 6   households          20640 non-null  float64
+| 7   median_income       20640 non-null  float64
+| 8   median_house_value  20640 non-null  float64
+| 9   ocean_proximity     20640 non-null  object 
+| dtypes: float64(9), object(1)
+| memory usage: 1.6+ MB
+
 
 - Target: Median_house_value 
 
