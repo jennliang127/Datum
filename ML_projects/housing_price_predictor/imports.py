@@ -42,7 +42,7 @@ from sklearn.tree import DecisionTreeRegressor
 from sklearn.svm import SVR
 
 # Evaluation tools 
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.model_selection import cross_val_score
 
 # Customize transformation
