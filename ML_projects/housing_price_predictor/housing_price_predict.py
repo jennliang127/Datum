@@ -1,3 +1,5 @@
+# Copyright (c) 2025 Jenn Liang
+
 from imports import * 
 from DataPrep import DataPrep
 from CombinedAttributesAdder import CombinedAttributesAdder
