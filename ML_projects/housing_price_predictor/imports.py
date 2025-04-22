@@ -41,19 +41,6 @@ from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.svm import SVR
 
-
-
-- Linear Regression
-- Ridge Regression
-- SGD Regressor
-- Lasso Regression
-- Elastic Net Regressor
-- Bayesian Ridge Regressor
-- Kernel Ridge Regressor
-- Random Forest Regressor
-- Decision Tree Regressor
-- Gradient Boosting Regressor
-
 # Evaluation tools 
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import cross_val_score
