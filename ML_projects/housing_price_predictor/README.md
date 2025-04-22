@@ -1,13 +1,24 @@
 # Machine Learning Regression Project
 
 ## Project Overview
-This project explores different regression models to predict [target variable, e.g., "housing prices"].  
+This project explores different regression models to predict median house value.  
 The objective is to build, evaluate, and compare multiple models to identify the best-performing algorithm.
 
 ## Dataset
-- Source: [mention the source, e.g., "Kaggle Housing Dataset" or "Generated synthetic data"]
-- Features: [briefly list important features]
-- Target: [target variable you are predicting]
+- Source: ""https://raw.githubusercontent.com/ageron/handson-ml2/datasets/housing/housing.csv"
+- Features: 
+    - Longitude: Float
+    - Latitude: Float
+    - Housing_median_age: Float
+    - Total_rooms: Float
+    - Total_bedrooms: Float
+    - Population: Float
+    - Households: Float
+    - Median_income: Float
+    - Median_house_value: Float
+    - Ocean_proximity: Object 
+
+- Target: Median_house_value 
 
 ## Models Trained
 - Linear Regression
@@ -20,8 +31,7 @@ The objective is to build, evaluate, and compare multiple models to identify the
 - Random Forest Regressor
 - Decision Tree Regressor
 - Gradient Boosting Regressor
-- XGBoost Regressor
-- [any others you tried]
+
 
 ## Evaluation Metrics
 - Mean Absolute Error (MAE)
@@ -48,10 +58,3 @@ The objective is to build, evaluate, and compare multiple models to identify the
 Based on the evaluation metrics, [Model Name] performed the best in predicting [target variable].  
 Future improvements could include hyperparameter tuning, feature engineering, or model stacking.
 
-## How to Run
-```bash
-# Install requirements
-pip install -r requirements.txt
-
-# Run the model training script
-python train.py
