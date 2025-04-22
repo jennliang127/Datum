@@ -8,7 +8,7 @@ The objective is to build, evaluate, and compare multiple models to identify the
 - Source: ""https://raw.githubusercontent.com/ageron/handson-ml2/datasets/housing/housing.csv"
 
 # Features: 
-|   |#   Column          |Non-Null|  Count | Dtype | 
+| # |  Column          |Non-Null|  Count | Dtype | 
 |---|--------------------|--------|--------|--------|  
 | 0   longitude          |20640   |non-null| float64|
 | 1   latitude           |20640   |non-null| float64|
