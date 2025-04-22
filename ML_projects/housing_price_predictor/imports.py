@@ -28,7 +28,7 @@ from skopt import dummy_minimize
 from skopt import gp_minimize
 from skopt import forest_minimize
 
-# Models
+# Regression Models
 from sklearn.linear_model import LinearRegression
 from sklearn.linear_model import SGDRegressor
 from sklearn.linear_model import Lasso
