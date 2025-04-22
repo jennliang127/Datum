@@ -7,7 +7,7 @@ The objective is to build, evaluate, and compare multiple models to identify the
 ## Dataset
 - Source: ""https://raw.githubusercontent.com/ageron/handson-ml2/datasets/housing/housing.csv"
 
-- Features: 
+# Features: 
 |   |#   Column          |Non-Null|  Count | Dtype | 
 |---|--------------------|--------|--------|--------|  
 | 0   longitude          |20640   |non-null| float64|
@@ -22,7 +22,6 @@ The objective is to build, evaluate, and compare multiple models to identify the
 | 9   ocean_proximity    |20640   |non-null| object |
 | dtypes: float64(9), object(1)
 | memory usage: 1.6+ MB
-
 
 - Target: Median_house_value 
 
