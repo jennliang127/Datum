@@ -1,10 +1,10 @@
 
 # Datum Overview
 
-This repository contains a collection of machine learning projects, dynamic modeling project, that applies predictive modeling across various domains. Each folder contains a different Machine Learning algorithms and techniques to make prediction on real-world datasets, the project here dsiplay data preprocessing, prediction model training, model selection, evaluation, and keep track of development workflows.
+This repository contains a collection of machine learning projects, and dynamic modeling projects, that apply predictive modeling across various domains. Each folder contains specific Machine Learning prediction algorithms that make predictions on real-world datasets, the project displays here demonstrate examples of data preprocessing, prediction model training, model selection, and evaluation, and served as a record track of development workflows.
 
 ## Projects
-- ML_projects [Machine learning prediction projets]
+- ML_projects [Machine learning prediction projects]
     - Housing price prediction 
 
 - Dynamic_System_projects
