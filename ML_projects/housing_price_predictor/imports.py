@@ -30,6 +30,7 @@ from skopt import forest_minimize
 
 # Regression Models
 from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import Ridge
 from sklearn.linear_model import SGDRegressor
 from sklearn.linear_model import Lasso
 from sklearn.linear_model import ElasticNet
