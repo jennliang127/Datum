@@ -42,9 +42,6 @@ num_attrib = dp.plot_num_feature_corr(housing_raw,'median_house_value')
 # Split data into test set and training set: 
 train_data, test_data = dp.split_train_test(housing_raw,0.2)
 
-# Drop intend prediction field 
-cp_housing = train_data.drop("median_house_value", axis=1)
-
 # Data Transformation
 # Replace missing value with most frequent values from the column
 imputer = SimpleImputer(strategy="most_frequent") 
@@ -79,12 +76,16 @@ full_pipeline = ColumnTransformer([
 housing_train_data = train_data.drop("median_house_value",axis=1)
 cp_training_housing_reported = train_data["median_house_value"].copy()
 
+housing_test_data = test_data.drop("median_house_value",axis=1)
+cp_test_housing_reported = test_data["median_house_value"].copy()
+
 # Preparing training data with full transformation pipline
 housing_train_prepared = full_pipeline.fit_transform(housing_train_data)
+housing_test_prepared = full_pipeline.fit_transform(housing_test_data)
 
-
-# Selected Regressions: 
+# Regressions: 
 lin_reg = LinearRegression()
+ridge_reg = Ridge()
 sgd_reg = SGDRegressor()
 lass_reg = Lasso()
 elas_reg = ElasticNet()
@@ -95,26 +96,44 @@ dectree_reg = DecisionTreeRegressor()
 
 svr_reg = SVR()
 
-# Train data set with each regressions:
-lin_reg.fit(housing_train_prepared, cp_training_housing_reported)
-sgd_reg.fit(housing_train_prepared, cp_training_housing_reported)
-lass_reg.fit(housing_train_prepared, cp_training_housing_reported)
-elas_reg.fit(housing_train_prepared, cp_training_housing_reported)
-bayes_ridge.fit(housing_train_prepared, cp_training_housing_reported)
-kern_ridge.fit(housing_train_prepared, cp_training_housing_reported)
+def evaluate_regression(regressions, x_train, y_train, x_test, y_test):
+    reg_results = {}
+    for reg, reg_model in regressions.items():
+        reg_model.fit(x_train, y_train)
+        reg_predic = reg_model.predict(x_test)
+        
+        # Evaluate performance
+        mse = mean_squared_error(y_test, reg_predic) # mean square error
+        rmse = np.sqrt(mse)                          # Square root MSE
+        r2 = r2_score(y_test, reg_predic)            # R-square test
+        cvs = cross_val_score(reg_model, x_test, y_test, 
+                              scoring="neg_mean_squared_error", cv=10)    # Cross value score
+        cvs_rmse_scores = np.sqrt(-cvs)
+        reg_results[reg] = {
+            'search Method': name
+            'MSE': mse,
+            'RMSE':rmse,
+            'R2': r2,
+            'Cross value score mean':cvs_rmse_scores.mean(),
+            'Cross value score std':cvs_rmse_score.std()
+        }
+    return reg_results
 
-forest_reg.fit(housing_train_prepared, cp_training_housing_reported)
-dectree_reg.fit(housing_train_prepared, cp_training_housing_reported)
-svr_reg.fit(housing_train_prepared, cp_training_housing_reported)
+regressions = {'Linear Regression': lin_reg,
+               'Ridge Regression':ridge_reg,
+               'SGD Regression':sgd_reg,
+               'Lasso Regression': lass_reg,
+               'Elastic Net Regression': elas_reg,
+               'Bayesian Ridge Regression':bayes_ridge,
+               'Kernel Ridge Regression':kern_ridge,
+               'Random Forest Regression':forest_reg,
+               'Decision Tree Regression':dectree_reg}
 
-# Prediction check:
-lin_prediction = lin_reg.predict(housing_train_prepared)
-sgd_prediction = sgd_reg.predict(housing_train_prepared)
-lass_prediction = lass_reg.predict(housing_train_prepared)
-elas_prediction = elas_reg.predict(housing_train_prepared)
-bayes_prediction = bayes_ridge.predict(housing_train_prepared)
-Kern_prediction = kern_ridge.prediction(housing_train_prepared)
+results = evaluate_regression(regressions, 
+                              housing_train_prepared, 
+                              cp_training_housing_reported,
+                              housing_test_prepared, 
+                              cp_test_housing_reported)
 
-forest_prediction = forest_reg.prediction(housing_train_prepared)
-dectree_prediction = dectree_reg.prediction(housing_train_prepared)
-svr_prediction = svr_reg.prediction(housing_train_prepared)
+
+# Fine Tuning: 
