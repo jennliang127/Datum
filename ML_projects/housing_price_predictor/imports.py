@@ -23,6 +23,7 @@ from sklearn.model_selection import StratifiedShuffleSplit
 # Model fine tuning tools 
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import RandomizedSearchCV
+from skopt.space import Integer, Real
 from skopt import BayesSearchCV
 from skopt import dummy_minimize
 from skopt import gp_minimize

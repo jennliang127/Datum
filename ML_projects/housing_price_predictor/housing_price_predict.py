@@ -2,6 +2,7 @@
 
 from imports import * 
 from DataPrep import DataPrep
+from time import time
 from CombinedAttributesAdder import CombinedAttributesAdder
 
 # Create class instance: 
@@ -137,3 +138,35 @@ results = evaluate_regression(regressions,
 
 
 # Fine Tuning: 
+
+param_grids = [{'alphas': np.logspace(-6,1,100),
+               'max_iter':(50, 1000),
+               'max_depth':[3,5,7],
+               'tol':(1e-6, 1e-2,'long-uniform')
+               }]
+    
+
+def run_fine_tuning(model, param_grids, x_train, y_train):
+    results = {}
+    
+    searches = {
+        "GridSearchCV": GridSearchCV(model, param_grids, cv=5, n_jobs=-1),
+        "RandomizedSearchCV": RandomizedSearchCV(model, param_grids['random'], n_iter=20, cv=5, n_jobs=-1),
+        "BayesSearchCV": BayesSearchCV(model, param_grids['bayes'], n_iter=20, cv=5, n_jobs=-1),
+        "gp_minimize": 
+        "dummy_minimize":
+        "forest_minimize":
+    }
+    
+    for name, searcher in searches.items():
+        print(f"Running {name}...")
+        start = time()
+        searcher.fit(x_train, y_train)
+        elapsed = time() - start
+        results[name] = {
+            "best_score": searcher.best_score_,
+            "best_params": searcher.best_params_,
+            "time_taken": elapsed
+        }
+        
+    return results
