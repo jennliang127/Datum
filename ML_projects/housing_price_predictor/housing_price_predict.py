@@ -111,12 +111,12 @@ def evaluate_regression(regressions, x_train, y_train, x_test, y_test):
                               scoring="neg_mean_squared_error", cv=10)    # Cross value score
         cvs_rmse_scores = np.sqrt(-cvs)
         reg_results[reg] = {
-            'search Method': name
+            'search Method':reg,
             'MSE': mse,
             'RMSE':rmse,
             'R2': r2,
             'Cross value score mean':cvs_rmse_scores.mean(),
-            'Cross value score std':cvs_rmse_score.std()
+            'Cross value score std':cvs_rmse_scores.std()
         }
     return reg_results
 
@@ -137,29 +137,100 @@ results = evaluate_regression(regressions,
                               cp_test_housing_reported)
 
 
-# Fine Tuning: 
+# Test Hyperparameter Tuning: 
 
-param_grids = [{'alphas': np.logspace(-6,1,100),
-               'max_iter':(50, 1000),
-               'max_depth':[3,5,7],
-               'tol':(1e-6, 1e-2,'long-uniform')
-               }]
-    
+"""
+param_grids configs the initial condition to search for optimal solution 
 
-def run_fine_tuning(model, param_grids, x_train, y_train):
+"""
+
+param_grids = {'random': {
+                    'n_estimators': [50, 100, 200],
+                    'max_depth':[3,5,7, None],
+                    'min_samples_split':[2, 5, 10],
+                    'bootstrap':[True, False]
+               },
+                'bayes': {
+                    'alpha': Real(1e-3, 1e1, prior='log-uniform'),
+                    'fit_intercept': Categorical([True,False]),
+                },
+
+                'lin_reg_gp_min':[Categorical([True, False],name = 'fit_intercept'),
+                                  Categorical([True, False], name = 'positive'),
+                                  Categorical([True, False], name = 'copy_X')
+                                 ],
+                #            Integer(3,10, name = 'max_depth'),
+                #            Integer(2,10, name = 'min_smaples_split'),
+
+                # 'dummy_min': [ Integer(50,200, name = 'n_estimators'),
+                #                Integer(3,10, name='max_depth'),
+                #                Integer(2,10, name='min_samples_split')
+                # ],
+                
+                # 'forest_min': [ Integer(50,200, name = 'n_estimators'),
+                #                 Integer(3,10, name = 'max_depth'),
+                #                 Integer(2,10, name = 'min_smaples_split')
+                # ],
+                'skopt': {'alpha':[0.001, 1, 10],
+                        'fit_intercept': [True]
+                },
+
+                'lin_reg_grid':{'copy_X':[True, False],
+                                'fit_intercept': [True, False],
+                                'n_jobs': [1,2,3],
+                                'positive': [True,False]},
+
+                'lin_reg_rand':{'fit_intercept': [True, False],
+                                'positive': [True, False]},
+
+                'lin_reg_bayes':{'fit_intercept': Categorical([True, False]),
+                                 'positive': Categorical([True, False]),
+                                 'copy_X': Categorical([True, False])},
+                
+                'lass_grid_rand':{'alpha':[1e-3,1e-2,1e-1,1e0,1e1],
+                                  'fit_intercept':[True, False],
+                                  'max_iter': [1000, 5000, 100000],
+                                  'tol': [1e-4, 1e-3],
+                                  'selection': ['cyclic', 'random']},
+
+                'lass_bayes':{'alpha':Real(1e-4, 10e1, prior='log-uniform'),
+                              'fit_intercept':Categorical([True, False]),
+                              'max_iter': Integer(1000, 100000),
+                              'tol': Real(1e-5, 1e-2,prior='log-uniform'),
+                              'selection': Categorical(['cyclic', 'random'])},
+
+                'bayes_grid_rand':{'alpha_1':[1e-6, 1e-5, 1e-4],
+                                   'alpha_2':[1e-6, 1e-5, 1e-4],
+                                   'lambda_1':[1e-6, 1e-5, 1e-4],
+                                   'lambda_2':[1e-6, 1e-5, 1e-4],
+                                   'fit_intercept':[True, False],
+                                   'tol': [1e-4, 1e-3]
+                                   },
+
+                'bayes_bayes':{'alpha_1': Real(1e-6, 1e-3, prior='log-uniform'),
+                               'alpha_2': Real(1e-6, 1e-3, prior='log-uniform'),
+                               'lambda_1': Real(1e-6, 1e-3, prior='log-uniform'),
+                               'lambda_2': Real(1e-6, 1e-3, prior='log-uniform'),
+                               'fit_intercept':Categorical([True, False]),
+                               'tol': Real(1e-5, 1e-2, prior='log-uniform')
+
+                }
+}
+
+
+def run_linear_regression_tuning(model, param_grids, x_train, y_train, 
+                    scoring='neg_mean_squared_error'):
+
     results = {}
     
     searches = {
-        "GridSearchCV": GridSearchCV(model, param_grids, cv=5, n_jobs=-1),
-        "RandomizedSearchCV": RandomizedSearchCV(model, param_grids['random'], n_iter=20, cv=5, n_jobs=-1),
-        "BayesSearchCV": BayesSearchCV(model, param_grids['bayes'], n_iter=20, cv=5, n_jobs=-1),
-        "gp_minimize": 
-        "dummy_minimize":
-        "forest_minimize":
+        "GridSearchCV": GridSearchCV(model, param_grids['lin_reg_grid'], cv=5, n_jobs=-1),
+        "RandomizedSearchCV": RandomizedSearchCV(model, param_grids['lin_reg_rand'], n_iter=20, cv=5, n_jobs=-1),
+        "BayesSearchCV": BayesSearchCV(model, param_grids['lin_reg_bayes'], n_iter=20, cv=5, n_jobs=-1)    
     }
     
     for name, searcher in searches.items():
-        print(f"Running {name}...")
+        print(f"Searching with {name} ...")
         start = time()
         searcher.fit(x_train, y_train)
         elapsed = time() - start
@@ -168,5 +239,129 @@ def run_fine_tuning(model, param_grids, x_train, y_train):
             "best_params": searcher.best_params_,
             "time_taken": elapsed
         }
+    
+    param_names = [dim.name for dim in param_grids['lin_reg_gp_min']] 
+
+    # Wrap object for skopt minimize-based searchers
+    def object_wrapper(params):
+        param_dict = dict(zip(param_names, params))
+        model.set_params(**param_dict)
+        scores = cross_val_score(model, x_train, y_train, cv=5, scoring = scoring, n_jobs = -1)
+        return -np.mean(scores)
+
+    skopt_dict = {
+        "gp_minimize": gp_minimize,
+        "dummy_minimize": dummy_minimize,
+        "forest_minimize": forest_minimize
+        }
+
+    for method_name, methods in skopt_dict.items():
+        print(f"Searching with {method_name} ...")
+        start = time()
+        result = methods(object_wrapper, param_grids['lin_reg_gp_min'],
+                        n_calls = 200, random_state = 0)
+        elaspsed = time() -start
+        best_param = dict(zip(param_names, result.x))
+        results[method_name] = {
+            "best_score":result.fun,
+            "best_params":dict(zip(param_names, result.x)),
+            "time elapsed": elapsed
+        }
+        
         
     return results
+
+
+def run_lasso_regression_tuning(model, param_grids, x_train, y_train, 
+                    scoring='neg_mean_squared_error'):
+
+    results = {}
+    searches = {
+        "GridSearchCV": GridSearchCV(model, param_grids['lass_grid_rand'], cv=5, n_jobs=-1),
+        "RandomizedSearchCV": RandomizedSearchCV(model, param_grids['lass_grid_rand'], n_iter=20, cv=5, n_jobs=-1),
+        "BayesSearchCV": BayesSearchCV(model, param_grids['lass_bayes'], n_iter=20, cv=5, n_jobs=-1)    
+    }
+    
+    for name, searcher in searches.items():
+        print(f"Searching with {name} ...")
+        start = time()
+        searcher.fit(x_train, y_train)
+        elapsed = time() - start
+        results[name] = {
+            "best_score": searcher.best_score_,
+            "best_params": searcher.best_params_,
+            "time_taken": elapsed
+        }
+
+
+    param_names = [dim.name for dim in param_grids['lin_reg_gp_min']] 
+
+    # Wrap object for skopt minimize-based searchers
+    def object_wrapper(params):
+        param_dict = dict(zip(param_names, params))
+        model.set_params(**param_dict)
+        scores = cross_val_score(model, x_train, y_train, cv=5, scoring = scoring, n_jobs = -1)
+        return -np.mean(scores)
+
+    skopt_dict = {
+        "gp_minimize": gp_minimize,
+        "dummy_minimize": dummy_minimize,
+        "forest_minimize": forest_minimize
+        }
+
+    for method_name, methods in skopt_dict.items():
+        print(f"Searching with {method_name} ...")
+        start = time()
+        result = methods(object_wrapper, param_grids['lin_reg_gp_min'],
+                        n_calls = 200, random_state = 0)
+        elaspsed = time() -start
+        best_param = dict(zip(param_names, result.x))
+        results[method_name] = {
+            "best_score":result.fun,
+            "best_params":dict(zip(param_names, result.x)),
+            "time elapsed": elapsed
+        }
+    
+    return results
+
+
+def run_bayes_ridge_tuning(model, param_grids, x_train, y_train, 
+                    scoring='neg_mean_squared_error'):
+
+    results = {}
+    searches = {
+        "GridSearchCV": GridSearchCV(model, param_grids['bayes_grid_rand'], cv=5, n_jobs=-1),
+        "RandomizedSearchCV": RandomizedSearchCV(model, param_grids['bayes_grid_rand'], n_iter=20, cv=5, n_jobs=-1),
+        "BayesSearchCV": BayesSearchCV(model, param_grids['bayes_bayes'], n_iter=20, cv=5, n_jobs=-1)    
+    }
+    
+    for name, searcher in searches.items():
+        print(f"Searching with {name} ...")
+        start = time()
+        searcher.fit(x_train, y_train)
+        elapsed = time() - start
+        results[name] = {
+            "best_score": -searcher.best_score_,
+            "best_params": searcher.best_params_,
+            "time_taken": elapsed
+        }
+    
+    return results
+
+
+
+linear_search_results = run_linear_regression_tuning(lin_reg, param_grids,
+                                        housing_train_prepared, 
+                                        cp_training_housing_reported)
+
+lasso_search_results = run_lasso_regression_tuning(lass_reg, param_grids,
+                                        housing_train_prepared, 
+                                        cp_training_housing_reported)
+
+
+bayesRidge_search_results = run_bayes_ridge_tuning(bayes_ridge, param_grids,
+                                            housing_train_prepared, 
+                                            cp_training_housing_reported)
+
+
+# Using the fine tuned modle to make prediction 
